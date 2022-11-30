@@ -1,6 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');//disponibiliza para o backend o objeto body
 const app = express();
+const connection = require('./database/database');
+const Pergunta  = require('./database/Pergunta');
+
+//Database 
+connection.authenticate().then(() => {
+    console.log('Conexão com o BD realizada');
+}).catch((error) => {
+    console.log(error);
+});
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -8,8 +17,7 @@ app.use(bodyParser.urlencoded({extended:false}));   //recebe os dados do form e 
 app.use(bodyParser.json()); //Permite a leitura de dados de form via JSON
 
 app.get('/', ( req , res ) => {
-    
-    res.render('home')
+    res.render('home');
 });
 
 app.get('/perguntar',( req, res ) => {
@@ -21,9 +29,14 @@ app.post('/salvarpergunta', ( req , res ) => {
     let titulo = req.body.titulo;
     let descricao = req.body.descricao;
 
-    res.send(`Titulo ${titulo} e descrição:${descricao}`)
+    Pergunta.create({
+        titulo,
+        descricao
+    }).then(() => {
+        res.redirect('/')
+    })
 })
 
 app.listen(3000, () => {
-    console.log('Pau quebrando');
+    console.log('Server on');
 })
