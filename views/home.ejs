@@ -1,7 +1,12 @@
 <%- include ("partials/header.ejs") %> 
 <body>
     <%- include ("partials/navbar.ejs") %> 
-    <h1>Teste bootstrap</h1>
+    <div class="container">
+
+        <% perguntas.forEach(pergunta => { %>
+            <p><%= pergunta.titulo %> </p>
+        <% }); %>
+    </div>
     
 </body>
 <%- include ("partials/footer.ejs") %> 

@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');//disponibiliza para o backend o objeto body
 const app = express();
-const connection = require('./database/database');
+const { connection } = require('./database/database')
 const Pergunta  = require('./database/Pergunta');
 
 //Database 
@@ -17,7 +17,12 @@ app.use(bodyParser.urlencoded({extended:false}));   //recebe os dados do form e 
 app.use(bodyParser.json()); //Permite a leitura de dados de form via JSON
 
 app.get('/', ( req , res ) => {
-    res.render('home');
+    Pergunta.findAll({ raw : true }).then((perguntas) => { //SELECT * FROM PERGUNTAS
+        res.render('home' , {
+            perguntas
+        });
+
+    }); 
 });
 
 app.get('/perguntar',( req, res ) => {
