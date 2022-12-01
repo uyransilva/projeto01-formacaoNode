@@ -17,11 +17,12 @@ app.use(bodyParser.urlencoded({extended:false}));   //recebe os dados do form e 
 app.use(bodyParser.json()); //Permite a leitura de dados de form via JSON
 
 app.get('/', ( req , res ) => {
-    Pergunta.findAll({ raw : true }).then((perguntas) => { //SELECT * FROM PERGUNTAS
+    Pergunta.findAll({ raw : true, order : [
+        ['id' , 'DESC']
+    ] }).then((perguntas) => { //SELECT * FROM PERGUNTAS
         res.render('home' , {
             perguntas
         });
-
     }); 
 });
 
