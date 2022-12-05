@@ -34,15 +34,30 @@ app.post('/salvarpergunta', ( req , res ) => {
     //recebe os dados do formulario a partir do "name" do campo
     let titulo = req.body.titulo;
     let descricao = req.body.descricao;
-
     Pergunta.create({
         titulo,
         descricao
     }).then(() => {
         res.redirect('/')
     })
-})
+});
+
+app.get('/pergunta/:id', ( req, res) => {
+    let id = req.params.id
+    Pergunta.findOne({
+        where: {id:id}
+    }).then( pergunta => {
+        if(pergunta != undefined){
+            res.render('pergunta', {
+                pergunta
+            });
+        }else{
+            res.redirect('/');
+        }
+    })
+});
+
 
 app.listen(3000, () => {
     console.log('Server on');
-})
+});
