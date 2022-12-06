@@ -4,4 +4,4 @@ module.exports.connection = new Sequelize('projeto1_formNode', 'root', 'Apolo130
     host:'localhost',
     dialect: 'mysql'
 });
-
+// finalizado

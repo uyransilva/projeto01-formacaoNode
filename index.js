@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');//disponibiliza para o backend o objet
 const app = express();
 const { connection } = require('./database/database')
 const Pergunta  = require('./database/Pergunta');
+const Resposta = require('./database/Resposta');
 
 //Database 
 connection.authenticate().then(() => {
@@ -25,11 +26,9 @@ app.get('/', ( req , res ) => {
         });
     }); 
 });
-
 app.get('/perguntar',( req, res ) => {
     res.render("perguntar");
 })
-
 app.post('/salvarpergunta', ( req , res ) => {
     //recebe os dados do formulario a partir do "name" do campo
     let titulo = req.body.titulo;
@@ -41,23 +40,37 @@ app.post('/salvarpergunta', ( req , res ) => {
         res.redirect('/')
     })
 });
-
 app.get('/pergunta/:id', ( req, res) => {
     let id = req.params.id
     Pergunta.findOne({
         where: {id:id}
     }).then( pergunta => {
         if(pergunta != undefined){
-            res.render('pergunta', {
-                pergunta
+            Resposta.findAll({
+                where: {perguntaId: pergunta.id},
+                order:[['id','DESC']]
+            }).then( respostas => {
+                res.render('pergunta', {
+                    pergunta,
+                    respostas
+                });
             });
         }else{
             res.redirect('/');
         }
     })
 });
-
-
+app.post('/responder', ( req , res ) => {
+    let corpo = req.body.corpo;
+    let perguntaId = req.body.pergunta;
+    Resposta.create({
+        corpo,
+        perguntaId
+    }).then(() => {
+        res.redirect(`/pergunta/${perguntaId}`)
+    })
+});
 app.listen(3000, () => {
     console.log('Server on');
 });
+// finalizado
